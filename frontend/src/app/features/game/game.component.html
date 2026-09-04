@@ -1,0 +1,129 @@
+<main class="game-shell">
+  <header class="game-header">
+    <div>
+      <p class="eyebrow">TankX // Battle sector 01</p>
+    </div>
+    <span class="connection" [attr.data-status]="connectionStatus()">
+      {{ connectionStatus() }}
+    </span>
+  </header>
+
+  <section class="battle-layout">
+    <div class="arena-frame">
+      <div #canvasViewport class="canvas-scroll">
+        <canvas #battlefield aria-label="HTML5 battlefield canvas"></canvas>
+      </div>
+      @if (matchEnded(); as result) {
+        <div class="match-banner" role="status">
+          <span class="match-banner__eyebrow">Match over</span>
+          <strong>{{ result.winnerName }} wins</strong>
+          <small>Result confirmed by the game server</small>
+          <button type="button" (click)="returnToLobby()">Return to lobby</button>
+        </div>
+      }
+      <div class="arena-caption">
+        <span>WASD / Arrows: move</span>
+        <span>Space: fire</span>
+        <span>Brick blocks: {{ mapStore.destructibleBlockCount() }}</span>
+      </div>
+    </div>
+
+    <aside class="hud" aria-label="Player information panel">
+      <div class="hud-title">Combat HUD</div>
+      <section class="player-card">
+        <p class="label">Pilot</p>
+        <h2>{{ localPlayer().playerName }}</h2>
+        <div class="status-row">
+          @if (localPlayer().health <= 0) {
+            <span class="player-status dead">Dead</span>
+          } @else if (localPlayer().health < 50) {
+            <span class="player-status injured">Injured</span>
+          } @else {
+            <span class="player-status alive">Alive</span>
+          }
+          <span>{{ localPlayer().health }} HP</span>
+        </div>
+      </section>
+
+      <section class="metric">
+        <span class="label">Armor</span>
+        <div class="hearts" aria-label="Remaining health">
+          @for (heart of healthHearts(); track $index) {
+            <span aria-hidden="true">♥</span>
+          } @empty {
+            <span class="empty-value">NO ARMOR</span>
+          }
+        </div>
+      </section>
+
+      <section class="metric score-metric">
+        <span class="label">Score</span>
+        <strong>{{ localPlayer().score.toString().padStart(6, '0') }}</strong>
+      </section>
+
+      <section class="metric">
+        <div class="metric-heading">
+          <span class="label">Ammo</span>
+          <strong>{{ localPlayer().ammunition }}</strong>
+        </div>
+        <div class="ammo-icons" aria-label="Remaining ammunition">
+          @for (bullet of ammunitionIcons(); track $index) {
+            <span aria-hidden="true"></span>
+          } @empty {
+            <span class="empty-value">EMPTY</span>
+          }
+        </div>
+      </section>
+
+      <button class="fire-button" type="button" (click)="fireBullet()">
+        Fire projectile
+      </button>
+      <p class="combat-message" aria-live="polite">{{ combatMessage() }}</p>
+
+      <section class="radar">
+        <div class="metric-heading">
+          <span class="label">Online units</span>
+          <strong>{{ playersStore.playerCount() }}</strong>
+        </div>        <ul>
+          @for (player of playersStore.players(); track player.playerId) {
+            <li>
+              <span>{{ player.playerName }}</span>
+              @if (player.health <= 0) {
+                <small class="dead">Dead</small>
+              } @else if (player.health < 50) {
+                <small class="injured">Injured</small>
+              } @else {
+                <small class="alive">Alive</small>
+              }
+            </li>
+          } @empty {
+            <li><span>Waiting for players...</span></li>
+          }
+        </ul>
+      </section>
+
+      <section class="radar kill-feed">
+        <div class="metric-heading">
+          <span class="label">Server standings</span>
+        </div>
+        <ul>
+          @for (player of playersStore.players(); track player.playerId) {
+            <li>
+              <span>{{ player.playerName }}</span>
+              <small>{{ player.kills }} K · {{ player.score }} pts</small>
+            </li>
+          }
+        </ul>
+      </section>
+    </aside>
+  </section>
+
+  <app-game-chat />
+
+  <nav class="touch-controls" aria-label="Movement controls">
+    <button type="button" (click)="move('up')" aria-label="Move up">↑</button>
+    <button type="button" (click)="move('left')" aria-label="Move left">←</button>
+    <button type="button" (click)="move('down')" aria-label="Move down">↓</button>
+    <button type="button" (click)="move('right')" aria-label="Move right">→</button>
+  </nav>
+</main>

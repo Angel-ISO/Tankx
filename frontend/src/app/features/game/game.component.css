@@ -1,0 +1,368 @@
+:host {
+  display: block;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--tx-bg-deep);
+  color: var(--tx-ink);
+  font-family: var(--tx-font-body);
+}
+
+.game-shell {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100dvh;
+  padding: clamp(0.6rem, 1.2vw, 1rem);
+  position: relative;
+}
+
+.game-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+}
+
+.game-header h1 {
+  color: var(--tx-panel-title);
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.eyebrow,
+.label {
+  color: var(--tx-ink-dim);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  color: var(--tx-accent);
+}
+
+.connection {
+  border: 2px solid var(--tx-line-bright);
+  color: #a3ada2;
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 0.5rem 0.7rem;
+  text-transform: uppercase;
+}
+
+.connection[data-status='connected'] {
+  border-color: var(--tx-accent);
+  color: var(--tx-accent);
+  box-shadow: 0 0 16px rgba(92, 255, 77, 0.22);
+}
+
+.battle-layout {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) clamp(260px, 22vw, 320px);
+  min-height: 0;
+}
+
+.arena-frame,
+.hud {
+  border: 4px solid var(--tx-line);
+  background: var(--tx-panel);
+}
+
+.arena-frame {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.65rem;
+  position: relative;
+}
+
+.canvas-scroll {
+  min-height: 0;
+  overflow: auto;
+}
+
+.arena-frame canvas {
+  border: 2px solid var(--tx-line-bright);
+  display: block;
+  image-rendering: pixelated;
+  max-width: none;
+}
+
+.arena-caption {
+  color: #98a097;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.7rem;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.65rem 0.2rem 0;
+  text-transform: uppercase;
+}
+
+.match-banner {
+  align-items: center;
+  background: rgba(12, 16, 12, 0.94);
+  border: 3px solid var(--tx-gold);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  left: 50%;
+  padding: 0.8rem 1.2rem;
+  position: absolute;
+  text-align: center;
+  top: 1rem;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.match-banner__eyebrow {
+  color: var(--tx-gold);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.match-banner strong {
+  font-size: 1.05rem;
+}
+
+.match-banner small {
+  color: #b8c4b6;
+  font-size: 0.7rem;
+}
+
+.hud {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.8rem;
+}
+
+.hud-title {
+  background: var(--tx-panel-title);
+  color: var(--tx-panel);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.7rem;
+  padding: 0.45rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.player-card,
+.metric,
+.radar {
+  border: 2px solid var(--tx-line);
+  margin-top: 0.65rem;
+  padding: 0.7rem;
+}
+
+.player-card h2 {
+  color: var(--tx-panel-title);
+  font-size: 1.2rem;
+  margin: 0 0 0.6rem;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.status-row,
+.metric-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.status-row {
+  color: #9ca49b;
+  font-size: 0.75rem;
+}
+
+.player-status,
+.radar small {
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.alive {
+  color: var(--tx-accent);
+}
+.injured {
+  color: var(--tx-gold);
+}
+.dead {
+  color: var(--tx-red);
+}
+
+.hearts {
+  color: var(--tx-red);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.45rem;
+  gap: 0.25rem;
+}
+
+.score-metric strong {
+  color: #fff176;
+  display: block;
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  text-align: right;
+}
+
+.ammo-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  min-height: 1.25rem;
+}
+
+.ammo-icons > span:not(.empty-value) {
+  background: var(--tx-yellow);
+  border-top: 3px solid #fff4b5;
+  height: 1rem;
+  width: 0.35rem;
+}
+
+.empty-value {
+  color: var(--tx-red);
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.fire-button,
+.touch-controls button {
+  border: 3px solid var(--tx-accent-line);
+  background: var(--tx-accent);
+  box-shadow: 3px 3px 0 var(--tx-accent-deep);
+  color: var(--tx-accent-ink);
+  cursor: pointer;
+  font:
+    900 0.75rem 'Courier New',
+    monospace;
+  text-transform: uppercase;
+}
+
+.fire-button {
+  margin-top: 0.7rem;
+  padding: 0.8rem;
+  width: 100%;
+}
+
+.fire-button:active,
+.touch-controls button:active {
+  box-shadow: 1px 1px 0 var(--tx-accent-deep);
+  transform: translate(2px, 2px);
+}
+
+.combat-message {
+  color: #b8c4b6;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  min-height: 2rem;
+}
+
+.radar ul {
+  display: grid;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 0.65rem 0 0;
+  max-height: 9rem;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.radar li {
+  border-top: 1px dashed #394539;
+  display: flex;
+  font-size: 0.7rem;
+  justify-content: space-between;
+  padding-top: 0.35rem;
+}
+
+.kill-feed li {
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.kill-feed small {
+  color: var(--tx-gold);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.touch-controls {
+  display: none;
+  gap: 0.5rem;
+  grid-template-columns: repeat(3, 3rem);
+  justify-content: center;
+  margin: 1rem auto 0;
+}
+
+.touch-controls button {
+  font-size: 1.2rem;
+  height: 3rem;
+}
+
+.touch-controls button:first-child {
+  grid-column: 2;
+}
+
+@media (max-width: 760px) {
+  :host {
+    height: auto;
+    min-height: 100dvh;
+    overflow: auto;
+  }
+  .game-shell {
+    height: auto;
+    min-height: 100dvh;
+  }
+  .battle-layout {
+    grid-template-columns: 1fr;
+  }
+  .canvas-scroll {
+    max-height: 60vh;
+  }
+  .hud {
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hud > * {
+    margin-top: 0;
+  }
+  .hud-title,
+  .combat-message,
+  .radar {
+    grid-column: 1 / -1;
+  }
+  .touch-controls {
+    display: grid;
+  }
+}
+
+@media (max-width: 560px) {
+  .game-header {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .hud {
+    grid-template-columns: 1fr;
+  }
+  .hud-title,
+  .combat-message,
+  .radar {
+    grid-column: auto;
+  }
+}

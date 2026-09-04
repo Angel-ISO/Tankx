@@ -1,0 +1,47 @@
+<main class="onboarding-shell">
+  <section class="content-panel">
+    <div class="onboarding-card">
+      <p class="eyebrow">TankX · Profile Setup</p>
+      <h1>Create your pilot profile</h1>
+      <p class="subtitle">Choose your display name and tank type to enter the battlefield.</p>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <label for="displayName">Display name</label>
+        <input
+          id="displayName"
+          type="text"
+          formControlName="displayName"
+          maxlength="20"
+          autocomplete="nickname"
+          placeholder="Enter your pilot name"
+        />
+        @if (form.controls.displayName.touched && form.controls.displayName.invalid) {
+          <small>Use between 3 and 20 characters.</small>
+        }
+
+        <label>Choose your tank</label>
+        <div class="tank-selection">
+          @for (tank of tankTypes; track tank.name; let i = $index) {
+            <button
+              type="button"
+              class="tank-option"
+              [class.selected]="selectedTankIndex() === i"
+              (click)="selectTank(i)"
+            >
+              <img [src]="'assets/PNG/Default size/' + tank.name + '.png'" [alt]="tank.displayName" class="tank-icon" />
+              <span>{{ tank.displayName }}</span>
+            </button>
+          }
+        </div>
+
+        @if (errorMessage()) {
+          <p class="message error" role="alert">{{ errorMessage() }}</p>
+        }
+
+        <button type="submit" [disabled]="loading()">
+          {{ loading() ? 'Creating profile...' : 'Complete setup' }}
+        </button>
+      </form>
+    </div>
+  </section>
+</main>

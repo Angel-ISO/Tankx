@@ -1,0 +1,57 @@
+<div class="chat-dock">
+  @if (open()) {
+    <section id="battlefield-chat" class="chat-panel" role="dialog" aria-label="Battlefield chat">
+      <header>
+        <div>
+          <span>Comms channel</span>
+          <strong>Battlefield chat</strong>
+        </div>
+        <button type="button" class="chat-close" (click)="toggle()" aria-label="Close chat">×</button>
+      </header>
+
+      <div class="chat-messages" aria-live="polite">
+        @for (item of store.messages(); track item.sentAt + item.playerId) {
+          <article>
+            <strong>{{ item.playerName }}</strong>
+            <p>{{ item.message }}</p>
+          </article>
+        } @empty {
+          <p class="chat-empty">No radio messages yet.</p>
+        }
+      </div>
+
+      <form class="chat-compose" (ngSubmit)="send()">
+        <input
+          type="text"
+          name="chatMessage"
+          maxlength="160"
+          autocomplete="off"
+          placeholder="Send a radio message..."
+          [ngModel]="message()"
+          (ngModelChange)="message.set($event)"
+          [disabled]="connectionStatus() !== 'connected'"
+        />
+        <button
+          type="submit"
+          [disabled]="connectionStatus() !== 'connected' || !message().trim()"
+        >
+          Send
+        </button>
+      </form>
+    </section>
+  }
+
+  <button
+    type="button"
+    class="chat-toggle"
+    (click)="toggle()"
+    [attr.aria-expanded]="open()"
+    aria-controls="battlefield-chat"
+  >
+    <span aria-hidden="true">▰</span>
+    {{ open() ? 'Hide chat' : 'Open chat' }}
+    @if (store.messages().length) {
+      <strong>{{ store.messages().length }}</strong>
+    }
+  </button>
+</div>

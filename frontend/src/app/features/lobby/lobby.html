@@ -1,0 +1,179 @@
+<main class="lobby-shell">
+  <section class="hero">
+    <p class="eyebrow">TankX · Sector 01 · Intermission</p>
+    <h1>Realtime Lobby</h1>
+    <p class="description">
+      Connect to the SignalR hub, see online players, and exchange messages before entering the
+      battlefield.
+    </p>
+
+    <div class="pilot-profile">
+      <span>Pilot file</span>
+      <strong>{{ profile()?.displayName ?? 'Loading profile...' }}</strong>
+    </div>
+
+    @if (profileError()) {
+      <div class="profile-error">
+        <p class="error">{{ profileError() }}</p>
+      <button
+        type="button"
+        (click)="connect()"
+        [disabled]="store.connectionStatus() === 'connecting'"
+      >
+        Retry
+      </button>
+      </div>
+    }
+
+    <div class="status" [attr.data-status]="store.connectionStatus()">
+      <span></span>
+      {{ store.connectionStatus() }}
+    </div>
+
+    @if (store.errorMessage()) {
+      <p class="error">{{ store.errorMessage() }}</p>
+    }
+
+    @if (roomError()) {
+      <p class="error">{{ roomError() }}</p>
+    }
+
+    @if (gameHub.currentRoom(); as room) {
+      <div class="room-controls">
+        <p class="eyebrow">Current room</p>
+        <h2>{{ room.roomCode }} · {{ room.playerCount }}/{{ room.maxPlayers }}</h2>
+        <p>{{ room.isPrivate ? 'Private room' : 'Open room' }} · {{ room.status }}</p>
+        @if (room.hostPlayerId === gameHub.playerId && room.status === 'waiting') {
+          <button
+            type="button"
+            [disabled]="room.playerCount !== room.maxPlayers"
+            (click)="startMatch()"
+          >
+            Start match
+          </button>
+        }
+        @if (room.status === 'inProgress') {
+          <button type="button" (click)="enterGame()">Enter the arena</button>
+        } @else {
+          <button type="button" (click)="leaveRoom()">Leave room</button>
+        }
+      </div>
+    } @else {
+      <div class="room-controls">
+        <p class="eyebrow">Create room</p>
+        <label>
+          Maximum players
+          <select [ngModel]="maxPlayers()" (ngModelChange)="maxPlayers.set(+$event)">
+            <option [value]="2">2</option>
+            <option [value]="3">3</option>
+            <option [value]="4">4</option>
+          </select>
+        </label>
+        <input
+          type="password"
+          placeholder="Optional password"
+          maxlength="64"
+          [ngModel]="roomPassword()"
+          (ngModelChange)="roomPassword.set($event)"
+        />
+        <button type="button" (click)="createRoom()">Create</button>
+      </div>
+
+      <div class="room-controls">
+        <p class="eyebrow">Join by code</p>
+        <input
+          type="text"
+          placeholder="Room code"
+          maxlength="6"
+          [ngModel]="joinCode()"
+          (ngModelChange)="joinCode.set($event)"
+        />
+        <input
+          type="password"
+          placeholder="Password if required"
+          maxlength="64"
+          [ngModel]="joinPassword()"
+          (ngModelChange)="joinPassword.set($event)"
+        />
+        <button type="button" [disabled]="joinCode().trim().length !== 6" (click)="joinRoom()">
+          Join
+        </button>
+      </div>
+
+      <div class="room-list">
+        @for (room of gameHub.rooms(); track room.roomCode) {
+          <button type="button" (click)="joinCode.set(room.roomCode); joinRoom(room.roomCode)">
+            {{ room.roomCode }} · {{ room.playerCount }}/{{ room.maxPlayers }}
+            {{ room.isPrivate ? '🔒' : '' }}
+          </button>
+        } @empty {
+          <p class="empty">No open rooms. Create the first one.</p>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="card players-card">
+    <header>
+      <div>
+        <p class="eyebrow">Troops on duty</p>
+        <h2>Active units</h2>
+      </div>
+      <strong>{{ playersStore.playerCount() }}</strong>
+    </header>
+
+    <ul>
+      @for (player of playersStore.players(); track player.playerId; let i = $index) {
+        <li>
+          <span class="rank">{{ (i + 1).toString().padStart(2, '0') }}</span>
+          <span class="avatar">{{ player.playerName.charAt(0).toUpperCase() }}</span>
+          <span>
+            <strong>{{ player.playerName }}</strong>
+            <small>x: {{ player.x }} · y: {{ player.y }} · health: {{ player.health }}</small>
+          </span>
+        </li>
+      } @empty {
+        <li class="empty">No units detected.</li>
+      }
+    </ul>
+  </section>
+
+  <section class="card chat-card">
+    <header>
+      <div>
+        <p class="eyebrow">Tactical comms</p>
+        <h2>Radio channel</h2>
+      </div>
+    </header>
+
+    <div class="messages" aria-live="polite">
+      @for (message of store.messages(); track message.sentAt + message.playerId) {
+        <article>
+          <strong>{{ message.playerName }}</strong>
+          <p>{{ message.message }}</p>
+        </article>
+      } @empty {
+        <p class="empty">Silence on the channel.</p>
+      }
+    </div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        placeholder="Transmit..."
+        maxlength="160"
+        [ngModel]="chatMessage()"
+        (ngModelChange)="chatMessage.set($event)"
+        (keyup.enter)="sendChat()"
+        [disabled]="store.connectionStatus() !== 'connected'"
+      />
+      <button
+        type="button"
+        (click)="sendChat()"
+        [disabled]="store.connectionStatus() !== 'connected' || !chatMessage().trim()"
+      >
+        Transmit
+      </button>
+    </div>
+  </section>
+</main>
