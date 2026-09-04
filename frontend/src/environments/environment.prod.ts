@@ -9,7 +9,7 @@ export const environment = {
   production: true,
 
   // TODO: reemplazar por la URL real del backend en producción.
-  backendUrl: 'https://tankx.runasp.net/',
+  backendUrl: 'https://tankx.runasp.net',
   gameHubUrl: 'https://tankx.runasp.net/hubs/game',
 
   mqtt: {
