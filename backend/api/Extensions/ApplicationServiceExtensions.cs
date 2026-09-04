@@ -10,13 +10,15 @@ namespace backend.api.Extensions;
 public static class ApplicationServiceExtensions
 {
     public static void ConfigureCors(this IServiceCollection services) =>
-        services.AddCors(options =>
-        {
-            options.AddPolicy("AngularClient", policy =>
-                policy.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-        });
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AngularClient", policy =>
+            policy
+                .WithOrigins("https://tankx-csi.pages.dev", "http://localhost:4200", "https://tankx.runasp.net")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+    });
 
     public static void ConfigureSupabaseAuth(this IServiceCollection services, string supabaseUrl)
     {
