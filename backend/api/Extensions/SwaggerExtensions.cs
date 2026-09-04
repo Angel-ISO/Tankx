@@ -50,15 +50,12 @@ public static class SwaggerExtensions
 
     public static WebApplication UseSwaggerDocumentation(this WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
-        {
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "TankX API v1");
                 options.DocumentTitle = "TankX API Documentation";
             });
-        }
 
         return app;
     }
