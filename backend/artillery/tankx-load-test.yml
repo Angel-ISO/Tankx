@@ -1,0 +1,58 @@
+# Artillery load test configuration for TankX backend
+# Run: artillery run tankx-load-test.yml
+
+config:
+  target: "http://localhost:5074"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 20
+      name: "Ramp up"
+    - duration: 60
+      arrivalRate: 5
+      name: "Cool down"
+
+scenarios:
+  - name: "TankX API Load Test"
+    flow:
+      # Login
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "angelgabrielorteg@gmail.com"
+            password: "angelito123"
+          capture:
+            - json: "$.access_token"
+              as: "authToken"
+      
+      # List matches (with auth)
+      - get:
+          url: "/tankx/Matches?pageSize=20"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      
+      # List profiles
+      - get:
+          url: "/tankx/Profiles?pageSize=20"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      
+      # Get online players
+      - get:
+          url: "/tankx/RedisCache/online"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      
+      # Get leaderboard
+      - get:
+          url: "/tankx/RedisCache/leaderboard/top?count=10"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      
+      # Benchmark endpoint
+      - get:
+          url: "/tankx/RedisCache/benchmark"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
