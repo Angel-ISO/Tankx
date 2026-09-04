@@ -13,10 +13,9 @@ public static class ApplicationServiceExtensions
         services.AddCors(options =>
         {
             options.AddPolicy("AngularClient", policy =>
-                policy.WithOrigins("http://localhost:4200")
+                policy.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+                    .AllowAnyHeader());
         });
 
     public static void ConfigureSupabaseAuth(this IServiceCollection services, string supabaseUrl)
